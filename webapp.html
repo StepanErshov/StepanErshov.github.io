@@ -373,146 +373,129 @@
     </div>
 
     <script>
+        // Получение Telegram ID
+        let telegram_id = null;
+        if (window.Telegram && Telegram.WebApp && Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user) {
+            telegram_id = Telegram.WebApp.initDataUnsafe.user.id;
+        }
         // Инициализация Telegram WebApp
         if (window.Telegram && Telegram.WebApp) {
             const tg = Telegram.WebApp;
-            
-            // Настройка WebApp
             tg.ready();
             tg.expand();
-            
-            // Установка основной кнопки
             tg.MainButton.setText('Войти в систему');
             tg.MainButton.show();
-            
-            // Обработка нажатия на основную кнопку
             tg.MainButton.onClick(function() {
-                // Показываем активную форму
                 const activeForm = document.querySelector('.auth-form.active');
                 if (activeForm) {
                     activeForm.dispatchEvent(new Event('submit'));
                 }
             });
-            
-            // Обработка нажатия кнопки "Назад"
             tg.BackButton.onClick(function() {
                 tg.close();
             });
         }
-        
         // Функциональность табов авторизации
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 const tabName = this.getAttribute('data-tab');
-                
-                // Убираем активный класс со всех кнопок и форм
                 document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
                 document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
-                
-                // Добавляем активный класс к выбранной кнопке и форме
                 this.classList.add('active');
                 document.getElementById(tabName + 'Form').classList.add('active');
-                
-                // Обновляем текст основной кнопки
                 if (window.Telegram && Telegram.WebApp) {
                     const buttonText = tabName === 'login' ? 'Войти в систему' : 'Зарегистрироваться';
                     Telegram.WebApp.MainButton.setText(buttonText);
                 }
             });
         });
-        
         // Обработка формы входа
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
             const rememberMe = document.getElementById('rememberMe').checked;
-            
-            // Валидация
             if (!email || !password) {
                 showNotification('Заполните все обязательные поля!', 'error');
                 return;
             }
-            
-            // Здесь будет логика отправки данных на сервер
-            console.log('Попытка входа:', { email, password, rememberMe });
-            
-            // Имитация успешного входа
-            showNotification('Успешный вход!', 'success');
-            
-            // Отправляем данные в Telegram бот
-            if (window.Telegram && Telegram.WebApp) {
-                Telegram.WebApp.sendData(JSON.stringify({
-                    action: 'login',
-                    email: email,
-                    password: password,
-                    rememberMe: rememberMe
-                }));
-            }
+            (async () => {
+                try {
+                    const response = await fetch('http://localhost:8000/jwt/login', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                        body: new URLSearchParams({
+                            username: email, // если логин по email
+                            password: password
+                        })
+                    });
+                    const data = await response.json();
+                    if (response.ok) {
+                        showNotification('Успешный вход!', 'success');
+                        // localStorage.setItem('jwt', data.access_token); // если нужно
+                        // window.Telegram.WebApp.close();
+                    } else {
+                        showNotification('Ошибка: ' + (data.detail || 'Неизвестная ошибка'), 'error');
+                    }
+                } catch (err) {
+                    showNotification('Ошибка соединения с сервером!', 'error');
+                }
+            })();
         });
-        
         // Обработка формы регистрации
         document.getElementById('registerForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            
             const name = document.getElementById('registerName').value;
             const email = document.getElementById('registerEmail').value;
             const company = document.getElementById('registerCompany').value;
             const password = document.getElementById('registerPassword').value;
             const passwordConfirm = document.getElementById('registerPasswordConfirm').value;
             const agreeTerms = document.getElementById('agreeTerms').checked;
-            
-            // Валидация
             if (!name || !email || !company || !password || !passwordConfirm) {
                 showNotification('Заполните все обязательные поля!', 'error');
                 return;
             }
-            
             if (password !== passwordConfirm) {
                 showNotification('Пароли не совпадают!', 'error');
                 return;
             }
-            
             if (!agreeTerms) {
                 showNotification('Необходимо согласиться с условиями!', 'error');
                 return;
             }
-            
-            // Здесь будет логика отправки данных на сервер
-            console.log('Попытка регистрации:', { name, email, company, password, agreeTerms });
-            
-            // Имитация успешной регистрации
-            showNotification('Регистрация успешна!', 'success');
-            
-            // Отправляем данные в Telegram бот
-            if (window.Telegram && Telegram.WebApp) {
-                Telegram.WebApp.sendData(JSON.stringify({
-                    action: 'register',
-                    name: name,
-                    email: email,
-                    company: company,
-                    password: password,
-                    agreeTerms: agreeTerms
-                }));
-            }
+            (async () => {
+                try {
+                    const [first_name, ...last_name_arr] = name.trim().split(' ');
+                    const last_name = last_name_arr.join(' ');
+                    const response = await fetch('http://localhost:8000/register', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            username: email, // или другой уникальный логин, если нужен
+                            password: password,
+                            first_name: first_name,
+                            last_name: last_name,
+                            telegram_id: telegram_id
+                        })
+                    });
+                    const data = await response.json();
+                    if (response.ok) {
+                        showNotification('Регистрация успешна!', 'success');
+                        // window.Telegram.WebApp.close();
+                    } else {
+                        showNotification('Ошибка: ' + (data.detail || 'Неизвестная ошибка'), 'error');
+                    }
+                } catch (err) {
+                    showNotification('Ошибка соединения с сервером!', 'error');
+                }
+            })();
         });
-        
         // Обработка кнопки "Запросить демо"
         document.querySelector('.social-auth-btn.demo').addEventListener('click', function() {
             showNotification('Запрос на демо отправлен! Мы свяжемся с вами в ближайшее время.', 'info');
-            
-            // Отправляем запрос в Telegram бот
-            if (window.Telegram && Telegram.WebApp) {
-                Telegram.WebApp.sendData(JSON.stringify({
-                    action: 'request_demo'
-                }));
-            }
         });
-        
         // Функция для показа уведомлений
         function showNotification(message, type = 'info') {
-            // Создаем элемент уведомления
             const notification = document.createElement('div');
             notification.className = `notification notification-${type}`;
             notification.innerHTML = `
@@ -521,8 +504,6 @@
                     <span>${message}</span>
                 </div>
             `;
-            
-            // Добавляем стили для уведомления
             notification.style.cssText = `
                 position: fixed;
                 top: 20px;
@@ -537,15 +518,10 @@
                 transition: transform 0.3s ease;
                 max-width: 300px;
             `;
-            
             document.body.appendChild(notification);
-            
-            // Показываем уведомление
             setTimeout(() => {
                 notification.style.transform = 'translateX(0)';
             }, 100);
-            
-            // Скрываем через 3 секунды
             setTimeout(() => {
                 notification.style.transform = 'translateX(100%)';
                 setTimeout(() => {
