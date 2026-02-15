@@ -1,515 +1,563 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SmileLadder - Авторизация</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <style>
-        :root {
-            --primary: #368D28;
-            --secondary: #76A36F;
-            --success: #89D97C;
-            --warning: #ed8936;
-            --danger: #f56565;
-            --light: #ABECA0;
-            --dark: #2d3748;
-            --background: #BCECB4;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            background: linear-gradient(135deg, var(--light) 0%, var(--background) 100%);
-            color: var(--dark);
-            line-height: 1.6;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-        }
-        
-        .webapp-container {
-            width: 100%;
-            max-width: 400px;
-        }
-        
-        .webapp-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-        
-        .webapp-logo {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--secondary);
-            margin-bottom: 0.5rem;
-        }
-        
-        .webapp-logo i {
-            margin-right: 10px;
-            color: var(--primary);
-        }
-        
-        .webapp-subtitle {
-            color: #64748b;
-            font-size: 0.9rem;
-        }
-        
-        .auth-container {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-        
-        .auth-tabs {
-            display: flex;
-            background: #f8fafc;
-        }
-        
-        .tab-btn {
-            flex: 1;
-            padding: 1rem;
-            border: none;
-            background: transparent;
-            font-size: 1rem;
-            font-weight: 600;
-            color: #64748b;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .tab-btn.active {
-            background: white;
-            color: var(--primary);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
+      :root {
+        --primary: #368d28;
+        --secondary: #76a36f;
+        --success: #89d97c;
+        --warning: #ed8936;
+        --danger: #f56565;
+        --light: #abeca0;
+        --dark: #2d3748;
+        --background: #bcecb4;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background: linear-gradient(
+          135deg,
+          var(--light) 0%,
+          var(--background) 100%
+        );
+        color: var(--dark);
+        line-height: 1.6;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+      }
+
+      .webapp-container {
+        width: 100%;
+        max-width: 400px;
+      }
+
+      .webapp-header {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+
+      .webapp-logo {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--secondary);
+        margin-bottom: 0.5rem;
+      }
+
+      .webapp-logo i {
+        margin-right: 10px;
+        color: var(--primary);
+      }
+
+      .webapp-subtitle {
+        color: #64748b;
+        font-size: 0.9rem;
+      }
+
+      .auth-container {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      .auth-tabs {
+        display: flex;
+        background: #f8fafc;
+      }
+
+      .tab-btn {
+        flex: 1;
+        padding: 1rem;
+        border: none;
+        background: transparent;
+        font-size: 1rem;
+        font-weight: 600;
+        color: #64748b;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .tab-btn.active {
+        background: white;
+        color: var(--primary);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .auth-content {
+        padding: 2rem;
+      }
+
+      .auth-form {
+        display: none;
+      }
+
+      .auth-form.active {
+        display: block;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: var(--dark);
+        font-size: 0.9rem;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+      }
+
+      .form-group input:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      }
+
+      .checkbox-label {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        font-size: 0.9rem;
+        color: #64748b;
+      }
+
+      .checkbox-label input[type="checkbox"] {
+        width: auto;
+        margin-right: 0.5rem;
+      }
+
+      .terms-link {
+        color: var(--primary);
+        text-decoration: none;
+      }
+
+      .auth-submit-btn {
+        width: 100%;
+        padding: 0.75rem;
+        background: linear-gradient(
+          135deg,
+          var(--primary) 0%,
+          var(--secondary) 100%
+        );
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-bottom: 1rem;
+      }
+
+      .auth-submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+      }
+
+      .auth-links {
+        text-align: center;
+      }
+
+      .forgot-password {
+        color: var(--primary);
+        text-decoration: none;
+        font-size: 0.9rem;
+      }
+
+      .auth-divider {
+        text-align: center;
+        margin: 1.5rem 0;
+        position: relative;
+      }
+
+      .auth-divider::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: #e2e8f0;
+      }
+
+      .auth-divider span {
+        background: white;
+        padding: 0 1rem;
+        color: #64748b;
+        font-size: 0.9rem;
+      }
+
+      .social-auth {
+        padding: 0 2rem 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .social-auth-btn {
+        padding: 0.75rem 1rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        background: white;
+        color: var(--dark);
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+      }
+
+      .social-auth-btn.telegram {
+        border-color: #0088cc;
+        color: #0088cc;
+      }
+
+      .social-auth-btn.telegram:hover {
+        background: #0088cc;
+        color: white;
+      }
+
+      .social-auth-btn.demo {
+        border-color: var(--success);
+        color: var(--success);
+      }
+
+      .social-auth-btn.demo:hover {
+        background: var(--success);
+        color: white;
+      }
+
+      .social-auth-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .webapp-footer {
+        text-align: center;
+        margin-top: 2rem;
+        color: #64748b;
+        font-size: 0.8rem;
+      }
+
+      .webapp-footer a {
+        color: var(--primary);
+        text-decoration: none;
+      }
+
+      @media (max-width: 480px) {
         .auth-content {
-            padding: 2rem;
+          padding: 1.5rem;
         }
-        
-        .auth-form {
-            display: none;
-        }
-        
-        .auth-form.active {
-            display: block;
-        }
-        
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: var(--dark);
-            font-size: 0.9rem;
-        }
-        
-        .form-group input {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-        
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-        
-        .checkbox-label {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            font-size: 0.9rem;
-            color: #64748b;
-        }
-        
-        .checkbox-label input[type="checkbox"] {
-            width: auto;
-            margin-right: 0.5rem;
-        }
-        
-        .terms-link {
-            color: var(--primary);
-            text-decoration: none;
-        }
-        
-        .auth-submit-btn {
-            width: 100%;
-            padding: 0.75rem;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-bottom: 1rem;
-        }
-        
-        .auth-submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-        
-        .auth-links {
-            text-align: center;
-        }
-        
-        .forgot-password {
-            color: var(--primary);
-            text-decoration: none;
-            font-size: 0.9rem;
-        }
-        
-        .auth-divider {
-            text-align: center;
-            margin: 1.5rem 0;
-            position: relative;
-        }
-        
-        .auth-divider::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: #e2e8f0;
-        }
-        
-        .auth-divider span {
-            background: white;
-            padding: 0 1rem;
-            color: #64748b;
-            font-size: 0.9rem;
-        }
-        
+
         .social-auth {
-            padding: 0 2rem 2rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
+          padding: 0 1.5rem 1.5rem;
         }
-        
-        .social-auth-btn {
-            padding: 0.75rem 1rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            background: white;
-            color: var(--dark);
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-        
-        .social-auth-btn.telegram {
-            border-color: #0088cc;
-            color: #0088cc;
-        }
-        
-        .social-auth-btn.telegram:hover {
-            background: #0088cc;
-            color: white;
-        }
-        
-        .social-auth-btn.demo {
-            border-color: var(--success);
-            color: var(--success);
-        }
-        
-        .social-auth-btn.demo:hover {
-            background: var(--success);
-            color: white;
-        }
-        
-        .social-auth-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        
-        .webapp-footer {
-            text-align: center;
-            margin-top: 2rem;
-            color: #64748b;
-            font-size: 0.8rem;
-        }
-        
-        .webapp-footer a {
-            color: var(--primary);
-            text-decoration: none;
-        }
-        
-        @media (max-width: 480px) {
-            .auth-content {
-                padding: 1.5rem;
-            }
-            
-            .social-auth {
-                padding: 0 1.5rem 1.5rem;
-            }
-        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="webapp-container">
-        <div class="webapp-header">
-            <div class="webapp-logo">
-                <i class="fas fa-smile"></i>
-                <span>SmileLadder</span>
-            </div>
-            <p class="webapp-subtitle">Корпоративная система эмоционального мониторинга</p>
+      <div class="webapp-header">
+        <div class="webapp-logo">
+          <i class="fas fa-smile"></i>
+          <span>SmileLadder</span>
         </div>
-        
-        <div class="auth-container">
-            <div class="auth-tabs">
-                <button class="tab-btn active" data-tab="login">Вход</button>
-                <button class="tab-btn" data-tab="register">Регистрация</button>
-            </div>
-            
-            <div class="auth-content">
-                <!-- Форма входа -->
-                <form id="loginForm" class="auth-form active">
-                    <div class="form-group">
-                        <label for="loginEmail">Email</label>
-                        <input type="email" id="loginEmail" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="loginPassword">Пароль</label>
-                        <input type="password" id="loginPassword" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="checkbox-label">
-                            <input type="checkbox" id="rememberMe">
-                            <span class="checkmark"></span>
-                            Запомнить меня
-                        </label>
-                    </div>
-                    <button type="submit" class="auth-submit-btn">
-                        <i class="fas fa-sign-in-alt"></i> Войти
-                    </button>
-                    <div class="auth-links">
-                        <a href="#" class="forgot-password">Забыли пароль?</a>
-                    </div>
-                </form>
-                
-                <!-- Форма регистрации -->
-                <form id="registerForm" class="auth-form">
-                    <div class="form-group">
-                        <label for="registerName">Имя и Фамилия</label>
-                        <input type="text" id="registerName" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="registerEmail">Email</label>
-                        <input type="email" id="registerEmail" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="registerCompany">Название компании</label>
-                        <input type="text" id="registerCompany" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="registerPassword">Пароль</label>
-                        <input type="password" id="registerPassword" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="registerPasswordConfirm">Подтвердите пароль</label>
-                        <input type="password" id="registerPasswordConfirm" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="checkbox-label">
-                            <input type="checkbox" id="agreeTerms" required>
-                            <span class="checkmark"></span>
-                            Я согласен с <a href="#" class="terms-link">условиями использования</a>
-                        </label>
-                    </div>
-                    <button type="submit" class="auth-submit-btn">
-                        <i class="fas fa-user-plus"></i> Зарегистрироваться
-                    </button>
-                </form>
-            </div>
-            
-            <div class="auth-divider">
-                <span>или</span>
-            </div>
-            
-            <div class="social-auth">
-                <a href="https://t.me/test_startap_bot" class="social-auth-btn telegram">
-                    <i class="fab fa-telegram"></i> Войти через Telegram
-                </a>
-                <button class="social-auth-btn demo">
-                    <i class="fas fa-play"></i> Запросить демо
-                </button>
-            </div>
+        <p class="webapp-subtitle">
+          Корпоративная система эмоционального мониторинга
+        </p>
+      </div>
+
+      <div class="auth-container">
+        <div class="auth-tabs">
+          <button class="tab-btn active" data-tab="login">Вход</button>
+          <button class="tab-btn" data-tab="register">Регистрация</button>
         </div>
-        
-        <div class="webapp-footer">
-            <p>Нужна помощь? <a href="https://t.me/test_startap_bot">Напишите нам</a></p>
+
+        <div class="auth-content">
+          <!-- Форма входа -->
+          <form id="loginForm" class="auth-form active">
+            <div class="form-group">
+              <label for="loginEmail">Email</label>
+              <input type="email" id="loginEmail" required />
+            </div>
+            <div class="form-group">
+              <label for="loginPassword">Пароль</label>
+              <input type="password" id="loginPassword" required />
+            </div>
+            <div class="form-group">
+              <label class="checkbox-label">
+                <input type="checkbox" id="rememberMe" />
+                <span class="checkmark"></span>
+                Запомнить меня
+              </label>
+            </div>
+            <button type="submit" class="auth-submit-btn">
+              <i class="fas fa-sign-in-alt"></i> Войти
+            </button>
+            <div class="auth-links">
+              <a href="#" class="forgot-password">Забыли пароль?</a>
+            </div>
+          </form>
+
+          <!-- Форма регистрации -->
+          <form id="registerForm" class="auth-form">
+            <div class="form-group">
+              <label for="registerName">Имя и Фамилия</label>
+              <input type="text" id="registerName" required />
+            </div>
+            <div class="form-group">
+              <label for="registerEmail">Email</label>
+              <input type="email" id="registerEmail" required />
+            </div>
+            <div class="form-group">
+              <label for="registerCompany">Название компании</label>
+              <input type="text" id="registerCompany" required />
+            </div>
+            <div class="form-group">
+              <label for="registerPassword">Пароль</label>
+              <input type="password" id="registerPassword" required />
+            </div>
+            <div class="form-group">
+              <label for="registerPasswordConfirm">Подтвердите пароль</label>
+              <input type="password" id="registerPasswordConfirm" required />
+            </div>
+            <div class="form-group">
+              <label class="checkbox-label">
+                <input type="checkbox" id="agreeTerms" required />
+                <span class="checkmark"></span>
+                Я согласен с
+                <a href="#" class="terms-link">условиями использования</a>
+              </label>
+            </div>
+            <button type="submit" class="auth-submit-btn">
+              <i class="fas fa-user-plus"></i> Зарегистрироваться
+            </button>
+          </form>
         </div>
+
+        <div class="auth-divider">
+          <span>или</span>
+        </div>
+
+        <div class="social-auth">
+          <a
+            href="https://t.me/test_startap_bot"
+            class="social-auth-btn telegram"
+          >
+            <i class="fab fa-telegram"></i> Войти через Telegram
+          </a>
+          <button class="social-auth-btn demo">
+            <i class="fas fa-play"></i> Запросить демо
+          </button>
+        </div>
+      </div>
+
+      <div class="webapp-footer">
+        <p>
+          Нужна помощь? <a href="https://t.me/test_startap_bot">Напишите нам</a>
+        </p>
+      </div>
     </div>
 
     <script>
-        // Получение Telegram ID
-        let telegram_id = null;
-        if (window.Telegram && Telegram.WebApp && Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user) {
-            telegram_id = Telegram.WebApp.initDataUnsafe.user.id;
-        }
-        // Инициализация Telegram WebApp
-        if (window.Telegram && Telegram.WebApp) {
-            const tg = Telegram.WebApp;
-            tg.ready();
-            tg.expand();
-            tg.MainButton.setText('Войти в систему');
-            tg.MainButton.show();
-            tg.MainButton.onClick(function() {
-                const activeForm = document.querySelector('.auth-form.active');
-                if (activeForm) {
-                    activeForm.dispatchEvent(new Event('submit'));
-                }
-            });
-            tg.BackButton.onClick(function() {
-                tg.close();
-            });
-        }
-        // Функциональность табов авторизации
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const tabName = this.getAttribute('data-tab');
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
-                this.classList.add('active');
-                document.getElementById(tabName + 'Form').classList.add('active');
-                if (window.Telegram && Telegram.WebApp) {
-                    const buttonText = tabName === 'login' ? 'Войти в систему' : 'Зарегистрироваться';
-                    Telegram.WebApp.MainButton.setText(buttonText);
-                }
-            });
+      // Получение Telegram ID
+      let telegram_id = null;
+      if (
+        window.Telegram &&
+        Telegram.WebApp &&
+        Telegram.WebApp.initDataUnsafe &&
+        Telegram.WebApp.initDataUnsafe.user
+      ) {
+        telegram_id = Telegram.WebApp.initDataUnsafe.user.id;
+      }
+      // Инициализация Telegram WebApp
+      if (window.Telegram && Telegram.WebApp) {
+        const tg = Telegram.WebApp;
+        tg.ready();
+        tg.expand();
+        tg.MainButton.setText("Войти в систему");
+        tg.MainButton.show();
+        tg.MainButton.onClick(function () {
+          const activeForm = document.querySelector(".auth-form.active");
+          if (activeForm) {
+            activeForm.dispatchEvent(new Event("submit"));
+          }
         });
-        // Обработка формы входа
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            const rememberMe = document.getElementById('rememberMe').checked;
-            if (!email || !password) {
-                showNotification('Заполните все обязательные поля!', 'error');
-                return;
-            }
-            (async () => {
-                try {
-                    const response = await fetch('http://localhost:8000/jwt/login', {
-                        method: 'POST',
-                        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                        body: new URLSearchParams({
-                            username: email, // если логин по email
-                            password: password
-                        })
-                    });
-                    const data = await response.json();
-                    if (response.ok) {
-                        showNotification('Успешный вход!', 'success');
-                        // localStorage.setItem('jwt', data.access_token); // если нужно
-                        // window.Telegram.WebApp.close();
-                    } else {
-                        showNotification('Ошибка: ' + (data.detail || 'Неизвестная ошибка'), 'error');
-                    }
-                } catch (err) {
-                    showNotification('Ошибка соединения с сервером!', 'error');
-                }
-            })();
+        tg.BackButton.onClick(function () {
+          tg.close();
         });
-        // Обработка формы регистрации
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const name = document.getElementById('registerName').value;
-            const email = document.getElementById('registerEmail').value;
-            const company = document.getElementById('registerCompany').value;
-            const password = document.getElementById('registerPassword').value;
-            const passwordConfirm = document.getElementById('registerPasswordConfirm').value;
-            const agreeTerms = document.getElementById('agreeTerms').checked;
-            if (!name || !email || !company || !password || !passwordConfirm) {
-                showNotification('Заполните все обязательные поля!', 'error');
-                return;
-            }
-            if (password !== passwordConfirm) {
-                showNotification('Пароли не совпадают!', 'error');
-                return;
-            }
-            if (!agreeTerms) {
-                showNotification('Необходимо согласиться с условиями!', 'error');
-                return;
-            }
-            (async () => {
-                try {
-                    const [first_name, ...last_name_arr] = name.trim().split(' ');
-                    const last_name = last_name_arr.join(' ');
-                    const response = await fetch('http://localhost:8000/register', {
-                        method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({
-                            username: email, // или другой уникальный логин, если нужен
-                            password: password,
-                            first_name: first_name,
-                            last_name: last_name,
-                            telegram_id: telegram_id
-                        })
-                    });
-                    const data = await response.json();
-                    if (response.ok) {
-                        showNotification('Регистрация успешна!', 'success');
-                        // window.Telegram.WebApp.close();
-                    } else {
-                        showNotification('Ошибка: ' + (data.detail || 'Неизвестная ошибка'), 'error');
-                    }
-                } catch (err) {
-                    showNotification('Ошибка соединения с сервером!', 'error');
-                }
-            })();
+      }
+      // Функциональность табов авторизации
+      document.querySelectorAll(".tab-btn").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          const tabName = this.getAttribute("data-tab");
+          document
+            .querySelectorAll(".tab-btn")
+            .forEach((b) => b.classList.remove("active"));
+          document
+            .querySelectorAll(".auth-form")
+            .forEach((f) => f.classList.remove("active"));
+          this.classList.add("active");
+          document.getElementById(tabName + "Form").classList.add("active");
+          if (window.Telegram && Telegram.WebApp) {
+            const buttonText =
+              tabName === "login" ? "Войти в систему" : "Зарегистрироваться";
+            Telegram.WebApp.MainButton.setText(buttonText);
+          }
         });
-        // Обработка кнопки "Запросить демо"
-        document.querySelector('.social-auth-btn.demo').addEventListener('click', function() {
-            showNotification('Запрос на демо отправлен! Мы свяжемся с вами в ближайшее время.', 'info');
+      });
+      // Обработка формы входа
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const email = document.getElementById("loginEmail").value;
+          const password = document.getElementById("loginPassword").value;
+          const rememberMe = document.getElementById("rememberMe").checked;
+          if (!email || !password) {
+            showNotification("Заполните все обязательные поля!", "error");
+            return;
+          }
+          (async () => {
+            try {
+              const response = await fetch("http://localhost:8000/jwt/login", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: new URLSearchParams({
+                  username: email, // если логин по email
+                  password: password,
+                }),
+              });
+              const data = await response.json();
+              if (response.ok) {
+                showNotification("Успешный вход!", "success");
+                // localStorage.setItem('jwt', data.access_token); // если нужно
+                // window.Telegram.WebApp.close();
+              } else {
+                showNotification(
+                  "Ошибка: " + (data.detail || "Неизвестная ошибка"),
+                  "error",
+                );
+              }
+            } catch (err) {
+              showNotification("Ошибка соединения с сервером!", "error");
+            }
+          })();
         });
-        // Функция для показа уведомлений
-        function showNotification(message, type = 'info') {
-            const notification = document.createElement('div');
-            notification.className = `notification notification-${type}`;
-            notification.innerHTML = `
+      // Обработка формы регистрации
+      document
+        .getElementById("registerForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const name = document.getElementById("registerName").value;
+          const email = document.getElementById("registerEmail").value;
+          const company = document.getElementById("registerCompany").value;
+          const password = document.getElementById("registerPassword").value;
+          const passwordConfirm = document.getElementById(
+            "registerPasswordConfirm",
+          ).value;
+          const agreeTerms = document.getElementById("agreeTerms").checked;
+          if (!name || !email || !company || !password || !passwordConfirm) {
+            showNotification("Заполните все обязательные поля!", "error");
+            return;
+          }
+          if (password !== passwordConfirm) {
+            showNotification("Пароли не совпадают!", "error");
+            return;
+          }
+          if (!agreeTerms) {
+            showNotification("Необходимо согласиться с условиями!", "error");
+            return;
+          }
+          (async () => {
+            try {
+              const [first_name, ...last_name_arr] = name.trim().split(" ");
+              const last_name = last_name_arr.join(" ");
+              const response = await fetch("http://localhost:8000/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  username: email, // или другой уникальный логин, если нужен
+                  password: password,
+                  first_name: first_name,
+                  last_name: last_name,
+                  telegram_id: telegram_id,
+                }),
+              });
+              const data = await response.json();
+              if (response.ok) {
+                showNotification("Регистрация успешна!", "success");
+                // window.Telegram.WebApp.close();
+              } else {
+                showNotification(
+                  "Ошибка: " + (data.detail || "Неизвестная ошибка"),
+                  "error",
+                );
+              }
+            } catch (err) {
+              showNotification("Ошибка соединения с сервером!", "error");
+            }
+          })();
+        });
+      // Обработка кнопки "Запросить демо"
+      document
+        .querySelector(".social-auth-btn.demo")
+        .addEventListener("click", function () {
+          showNotification(
+            "Запрос на демо отправлен! Мы свяжемся с вами в ближайшее время.",
+            "info",
+          );
+        });
+      // Функция для показа уведомлений
+      function showNotification(message, type = "info") {
+        const notification = document.createElement("div");
+        notification.className = `notification notification-${type}`;
+        notification.innerHTML = `
                 <div class="notification-content">
-                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                    <i class="fas fa-${type === "success" ? "check-circle" : type === "error" ? "exclamation-circle" : "info-circle"}"></i>
                     <span>${message}</span>
                 </div>
             `;
-            notification.style.cssText = `
+        notification.style.cssText = `
                 position: fixed;
                 top: 20px;
                 right: 20px;
-                background: ${type === 'success' ? '#48bb78' : type === 'error' ? '#f56565' : '#4299e1'};
+                background: ${type === "success" ? "#48bb78" : type === "error" ? "#f56565" : "#4299e1"};
                 color: white;
                 padding: 1rem 1.5rem;
                 border-radius: 8px;
@@ -519,17 +567,17 @@
                 transition: transform 0.3s ease;
                 max-width: 300px;
             `;
-            document.body.appendChild(notification);
-            setTimeout(() => {
-                notification.style.transform = 'translateX(0)';
-            }, 100);
-            setTimeout(() => {
-                notification.style.transform = 'translateX(100%)';
-                setTimeout(() => {
-                    document.body.removeChild(notification);
-                }, 300);
-            }, 3000);
-        }
+        document.body.appendChild(notification);
+        setTimeout(() => {
+          notification.style.transform = "translateX(0)";
+        }, 100);
+        setTimeout(() => {
+          notification.style.transform = "translateX(100%)";
+          setTimeout(() => {
+            document.body.removeChild(notification);
+          }, 300);
+        }, 3000);
+      }
     </script>
-</body>
-</html> 
+  </body>
+</html>
